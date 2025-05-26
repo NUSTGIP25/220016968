@@ -1,0 +1,163 @@
+Importing necessary libraries
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression 
+from sklearn.metrics import mean_squared_error
+import numpy as np
+
+
+Training data based on headings of the data
+data = { 
+    'Year': [2010, 2011, 2012, 2013, 2014, 2015, 2016],
+    'Rainfall(mm)': [285, 285, 285, 285, 285, 285, 285],
+    'Pesticides(hg/ha)': [56, 56, 56, 56, 56, 56, 56],
+    'Temperature': [20.62, 19.26, 20.11, 20.73, 20.60, 20.52, 20.60],
+    'Crop_Yield': [19882, 19297, 18999, 18683, 16000, 18420, 20591],
+    'Temperature': [20.62, 19.26, 20.11, 20.73, 20.60, 20.52, 20.60],
+    'Crop_Yield': [19882, 19297, 18999, 18683, 16000, 18420, 20591]
+}
+
+
+df = pd.DataFrame(data)
+
+Target variables from training data
+X = df[['Rainfall(mm)', 'Pesticides(hg/ha)', 'Temperature']]
+Y = df['Crop_Yield']
+
+Splitting the data training and test sets
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3, random_state=42)
+
+Training model (method) applied
+model = LinearRegression()
+model.fit(X_train, Y_train)
+
+
+
+
+Plotting the prediction vs the real outcome of the crops over the years
+
+import matplotlib.pyplot as plt
+plt.figure(figsize=(8, 6))
+plt.scatter(Y_test, Y_pred, color='blue', label='Predicted vs Actual')
+plt.plot([min(Y_test), max(Y_test)], [min(Y_test), max(Y_test)], color='red', linestyle='--', label='Perfect Prediction Line')
+plt.title('Actual vs Predicted Crop Yield')
+plt.xlabel('Actual Crop Yield')
+plt.ylabel('Predicted Crop Yield')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+
+
+Using temperature input of your choice to predict crop yield
+Importing necessary libraries
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression 
+from sklearn.metrics import mean_squared_error
+import numpy as np
+
+
+Training data based on headings of the data
+data = { 
+    'Year': [2010, 2011, 2012, 2013, 2014, 2015, 2016],
+    'Rainfall(mm)': [285, 285, 285, 285, 285, 285, 285],
+    'Pesticides(hg/ha)': [56, 56, 56, 56, 56, 56, 56],
+    'Temperature': [20.62, 19.26, 20.11, 20.73, 20.60, 20.52, 20.60],
+    'Crop_Yield': [19882, 19297, 18999, 18683, 16000, 18420, 20591],
+    'Temperature': [20.62, 19.26, 20.11, 20.73, 20.60, 20.52, 20.60],
+    'Crop_Yield': [19882, 19297, 18999, 18683, 16000, 18420, 20591]
+}
+
+
+df = pd.DataFrame(data)
+
+Target variables from training data
+X = df[['Rainfall(mm)', 'Pesticides(hg/ha)', 'Temperature']]
+Y = df['Crop_Yield']
+
+Splitting the data training and test sets
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3, random_state=42)
+
+Training model (method) applied
+model = LinearRegression()
+Y_pred = model.predict(X_test)
+
+rmse = np.sqrt(mean_squared_error(Y_test, Y_pred))
+print("Root Mean Squared Error (RMSE):", rmse)
+
+plt.figure(figsize=(12, 5))
+
+
+plt.subplot(1, 2, 1)
+plt.scatter(Y_test, Y_pred, color='blue')
+plt.plot([min(Y_test), max(Y_test)], [min(Y_test), max(Y_test)], 'r--')
+plt.xlabel("Actual Crop Yield")
+plt.ylabel("Predicted Crop Yield")
+plt.title("Actual vs Predicted Crop Yield")
+plt.grid(True)
+
+
+
+
+temperature_2025 = 20.4
+new_data = pd.DataFrame({
+    'Rainfall(mm)': [285],
+    'Pesticides(hg/ha)': [56],
+    'Temperature': [temperature_2025]
+})
+
+print("\n--- Predict Crop Yield for 2025 ---")
+try:
+    temp_input = float(input("Enter expected average temperature for 2025 (°C): "))
+    input_data = pd.DataFrame({
+        'Rainfall(mm)': [285],
+        'Pesticides(hg/ha)': [56],
+        'Temperature': [temp_input]
+    })
+    prediction = model.predict(input_data)
+    print(f"\nEstimated Crop Yield for 2025 (Temp: {temp_input}°C): {prediction[0]:.2f}")
+except ValueError:
+    print("Invalid input. Please enter a numeric temperature value.")
+
+Predicting crop yield using rainfall data and crop yield: 
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+data = {
+    'Year': [2010, 2011, 2012, 2013, 2014, 2015, 2016],
+    'Rainfall': [285, 285, 285, 285, 285, 285, 285],
+    'Crop_yield': [19882, 19297, 18999, 18683, 16000, 18420, 20591]
+}
+
+df = pd.DataFrame(data)
+
+df['Prev_Crop_yield'] = df['Crop_yield'].shift(1)
+
+df = df.dropna()  
+
+X = df[['Rainfall', 'Prev_Crop_yield']]
+y = df['Crop_yield']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+plt.scatter(y_test, y_pred)
+plt.xlabel('Actual Crop Yield')
+plt.ylabel('Predicted Crop Yield')
+plt.title('Actual vs Predicted Crop Yield')
+plt.show()
+
+
